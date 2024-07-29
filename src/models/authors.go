@@ -10,3 +10,8 @@ type AuthorsOut struct {
 	ID uuid.UUID `json:"id,omitempty" gorm:"type:uuid;column:id"` 
 	AuthorsIn
 }
+
+type Authors struct {
+	AuthorsOut
+	IDPK uint `gorm:"type:primaryKey;column:id_pk"`
+}
