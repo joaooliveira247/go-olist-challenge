@@ -7,6 +7,7 @@ type AuthorsIn struct {
 }
 
 type AuthorsOut struct {
-	ID uuid.UUID
+	ID uuid.UUID `json:"id,omitempty"`
 	AuthorsIn
 }
+
