@@ -10,5 +10,6 @@ func AuthorsRoutes(eng *gin.Engine) {
 	{
 		authorRouter.POST("/", controllers.CreateAuthor)
 		authorRouter.GET("/", controllers.GetAuthors)
+		authorRouter.DELETE("/:id", controllers.DeleteAuthor)
 	}
 }
