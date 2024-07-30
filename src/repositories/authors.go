@@ -6,3 +6,6 @@ type Author struct {
 	db *gorm.DB
 }
 
+func NewAuthorRepository(db *gorm.DB) *Author {
+	return &Author{db}
+}
