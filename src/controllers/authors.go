@@ -53,6 +53,28 @@ func GetAuthors(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, authors)
 }
 
+func SearchAuthorByName(ctx *gin.Context) {
+	name := ctx.Param("name")
+
+	db, err := db.GetDBConnection()
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		return
+	}
+
+	repository := repositories.NewAuthorRepository(db)
+
+	authors, err := repository.GetAuthorsByName(name)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "error when try search author"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, authors)
+}
+
 func DeleteAuthor(ctx *gin.Context) {
 	id, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
