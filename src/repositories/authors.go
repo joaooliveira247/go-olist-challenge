@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/joaooliveira247/go-olist-challenge/src/models"
 	"gorm.io/gorm"
@@ -31,6 +33,15 @@ func (repository *Author) GetAuthors() ([]models.Authors, error) {
 		return nil, err
 	}
 
+	return authors, nil
+}
+
+func (repository *Author) GetAuthorsByName(name string) ([]models.Authors, error) {
+	var authors []models.Authors
+
+	if err := repository.db.Find(&authors, "name LIKE ?", fmt.Sprintf("%%%s%%", name)).Error; err != nil {
+		return nil, err
+	}
 	return authors, nil
 }
 
