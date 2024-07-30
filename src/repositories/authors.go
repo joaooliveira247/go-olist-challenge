@@ -23,3 +23,13 @@ func (repository *Author) InsertAuthor(author models.Authors) (uuid.UUID, error)
 	tx.Commit()
 	return author.ID, nil
 }
+
+func (repository *Author) GetAuthors() ([]models.Authors, error) {
+	var authors []models.Authors
+
+	if err := repository.db.Find(&authors).Error; err != nil {
+		return nil, err
+	}
+
+	return authors, nil
+}
