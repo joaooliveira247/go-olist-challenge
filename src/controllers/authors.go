@@ -31,3 +31,23 @@ func CreateAuthor(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, gin.H{"id": author.ID})
 }
+
+func GetAuthors(ctx *gin.Context) {
+	db, err := db.GetDBConnection()
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		return
+	}
+
+	repository := repositories.NewAuthorRepository(db)
+
+	authors, err := repository.GetAuthors()
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, authors)
+}
