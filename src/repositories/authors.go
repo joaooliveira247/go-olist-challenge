@@ -33,3 +33,10 @@ func (repository *Author) GetAuthors() ([]models.Authors, error) {
 
 	return authors, nil
 }
+
+func (repository *Author) DeleteAuthor(id uuid.UUID) error {
+	if err := repository.db.Delete(&models.Authors{}, "id = ?", id).Error; err != nil {
+		return err
+	}
+	return nil
+}
