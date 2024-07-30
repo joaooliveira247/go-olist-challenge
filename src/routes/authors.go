@@ -9,5 +9,6 @@ func AuthorsRoutes(eng *gin.Engine) {
 	authorRouter := eng.Group("/authors")
 	{
 		authorRouter.POST("/", controllers.CreateAuthor)
+		authorRouter.GET("/", controllers.GetAuthors)
 	}
 }
