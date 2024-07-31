@@ -14,3 +14,11 @@ func (author *Authors) validade() error {
 	}
 	return nil
 }
+
+func (author *Authors) Prepare() error {
+	if err := author.validade(); err != nil {
+		return err
+	}
+	author.GenUUID()
+	return nil
+}
