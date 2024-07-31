@@ -16,7 +16,12 @@ func CreateAuthor(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"msg": "invalid body"})
 		return
 	}
-	author.GenUUID()
+	
+	if err := author.Prepare(); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"msg": err})
+		return
+	}
+
 	db, err := db.GetDBConnection()
 
 	if err != nil {
