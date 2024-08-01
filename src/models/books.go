@@ -1,5 +1,7 @@
 package models
 
+import "errors"
+
 type Book struct {
 	UUIDHolder
 	IDPK uint `gorm:"primaryKey;column:id_pk" json:"-"`
@@ -7,4 +9,11 @@ type Book struct {
 	Edition uint8 `gorm:"type:smallint;column:edition"`
 	PublicationYear uint16 `gorm:"type:smallint;column:publication_year"`
 	Authors []string `gorm:"-" json:"authors"`
+}
+
+func (book *Book) validade() error {
+	if book.Title == "" {
+		return errors.New("field 'title' cannot be empty")
+	}
+	return nil
 }
