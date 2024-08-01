@@ -17,3 +17,11 @@ func (book *Book) validade() error {
 	}
 	return nil
 }
+
+func (book *Book) Prepare() error {
+	if err := book.validade(); err != nil {
+		return err
+	}
+	book.GenUUID()
+	return nil
+}
