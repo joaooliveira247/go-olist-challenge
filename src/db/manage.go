@@ -8,7 +8,7 @@ import (
 )
 
 func Create(db *gorm.DB) {
-	if err := db.AutoMigrate(&models.Authors{}); err != nil {
+	if err := db.AutoMigrate(&models.Authors{}, &models.Book{}, &models.BookAuthors{}); err != nil {
 		log.Fatal(err)
 	}
 }
