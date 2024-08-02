@@ -1,6 +1,10 @@
 package models
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type Book struct {
 	UUIDHolder
@@ -8,7 +12,7 @@ type Book struct {
 	Title string `gorm:"type:varchar(255);not null;column:title" json:"title"`
 	Edition uint8 `gorm:"type:smallint;column:edition" json:"edition"`
 	PublicationYear uint16 `gorm:"type:smallint;column:publication_year" json:"publication_year"`
-	Authors []string `gorm:"-" json:"authors"`
+	Authors []uuid.UUID `gorm:"-" json:"authors"`
 }
 
 func (book *Book) validade() error {
