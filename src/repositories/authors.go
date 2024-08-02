@@ -45,6 +45,15 @@ func (repository *Author) GetAuthorsByName(name string) ([]models.Authors, error
 	return authors, nil
 }
 
+func (repository *Author) GetAuthorByID(id uuid.UUID) (models.Authors, error) {
+	var author models.Authors
+
+	if err := repository.db.Where("id = ?", id).First(&author).Error; err != nil {
+		return models.Authors{}, err
+	}
+	return author, nil
+}
+
 func (repository *Author) DeleteAuthor(id uuid.UUID) error {
 	if err := repository.db.Delete(&models.Authors{}, "id = ?", id).Error; err != nil {
 		return err
