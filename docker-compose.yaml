@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+
+  workout_db:
+    image: postgres:11-alpine
+    restart: "no"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: passwd
+      POSTGRES_DB: book_store
+    ports:
+      - 5432:5432
