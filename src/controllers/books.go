@@ -28,7 +28,7 @@ func CreateBook(ctx *gin.Context) {
 		return
 	}
 
-	repository := repositories.NewAuthorRepository(db)
+	repository := repositories.NewBookRepository(db)
 
 	if _, err := repository.InsertBook(book); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
