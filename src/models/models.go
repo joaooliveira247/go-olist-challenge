@@ -9,7 +9,7 @@ type UUIDHolder struct {
 type BookAuthors struct {
 	BookID   uint    `gorm:"primaryKey;column:book_id"`
 	Book     Book    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:BookID;"`
-	AuthorID uint `gorm:"primaryKey;column:author_id"`
+	AuthorID uint    `gorm:"primaryKey;column:author_id"`
 	Author   Authors `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:AuthorID;"`
 }
 
