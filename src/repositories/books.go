@@ -29,3 +29,34 @@ func (repository *Book) verifyAuthors(ids []uuid.UUID) ([]models.Authors, error)
 
 	return validAuthors, nil
 }
+
+func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
+	tx := repository.db.Begin()
+	result := tx.Create(&book)
+	if err := result.Error; err != nil {
+		tx.Rollback()
+		return uuid.UUID{}, err
+	}
+	tx.Commit()
+
+	authors, err := repository.verifyAuthors(book.Authors)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	var bookAuthors []models.BookAuthors
+
+	for _, author := range authors {
+		bookAuthors = append(bookAuthors, models.BookAuthors{BookID: book.IDPK, AuthorID: author.IDPK})
+	}
+
+	tx2 := repository.db.Begin()
+
+	if err := tx2.Create(&bookAuthors).Error; err != nil {
+		tx2.Rollback()
+		return uuid.UUID{}, err
+	}
+	tx.Commit()
+
+	return book.ID, nil
+}
