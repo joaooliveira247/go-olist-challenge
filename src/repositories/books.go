@@ -60,3 +60,12 @@ func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
 
 	return book.ID, nil
 }
+
+func (repository *Book) GetBooks() ([]models.Book, error) {
+	var books []models.Book
+
+	if err := repository.db.Find(&books).Error; err != nil {
+		return nil, err
+	}
+	return books, nil
+}
