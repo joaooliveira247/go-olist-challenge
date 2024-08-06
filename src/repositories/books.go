@@ -16,7 +16,9 @@ func NewBookRepository(db *gorm.DB) *Book {
 	return &Book{db}
 }
 
-func (repository *Book) verifyAuthors(ids []uuid.UUID) ([]models.Authors, error) {
+func (repository *Book) verifyAuthors(
+	ids []uuid.UUID,
+) ([]models.Authors, error) {
 	var validAuthors []models.Authors
 
 	if err := repository.db.Where("id IN ?", ids).Find(&validAuthors).Error; err != nil {
@@ -37,7 +39,6 @@ func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
 		tx.Rollback()
 		return uuid.UUID{}, err
 	}
-	tx.Commit()
 
 	authors, err := repository.verifyAuthors(book.Authors)
 	if err != nil {
@@ -47,13 +48,14 @@ func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
 	var bookAuthors []models.BookAuthors
 
 	for _, author := range authors {
-		bookAuthors = append(bookAuthors, models.BookAuthors{BookID: book.IDPK, AuthorID: author.IDPK})
+		bookAuthors = append(
+			bookAuthors,
+			models.BookAuthors{BookID: book.IDPK, AuthorID: author.IDPK},
+		)
 	}
 
-	tx2 := repository.db.Begin()
-
-	if err := tx2.Create(&bookAuthors).Error; err != nil {
-		tx2.Rollback()
+	if err := tx.Create(&bookAuthors).Error; err != nil {
+		tx.Rollback()
 		return uuid.UUID{}, err
 	}
 	tx.Commit()
@@ -64,8 +66,24 @@ func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
 func (repository *Book) GetBooks() ([]models.Book, error) {
 	var books []models.Book
 
-	if err := repository.db.Find(&books).Error; err != nil {
+	if err := repository.db.Raw(`
+	SELECT 
+		array_agg(a.id::text) AS authors, b.*
+	FROM 
+		book_authors ba
+	INNER JOIN 
+		authors a 
+	ON 
+		ba.author_id = a.id_pk 
+	INNER JOIN 
+		books b
+	ON
+		ba.book_id = b.id_pk
+	group by
+		b.id_pk;
+	`).Scan(&books).Error; err != nil {
 		return nil, err
 	}
+
 	return books, nil
 }
