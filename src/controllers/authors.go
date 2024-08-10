@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,6 +9,7 @@ import (
 	"github.com/joaooliveira247/go-olist-challenge/src/db"
 	"github.com/joaooliveira247/go-olist-challenge/src/models"
 	"github.com/joaooliveira247/go-olist-challenge/src/repositories"
+	"github.com/joaooliveira247/go-olist-challenge/src/utils"
 )
 
 func CreateAuthor(ctx *gin.Context) {
@@ -16,7 +18,7 @@ func CreateAuthor(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"msg": "invalid body"})
 		return
 	}
-	
+
 	if err := author.Prepare(); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"msg": err})
 		return
@@ -25,14 +27,24 @@ func CreateAuthor(ctx *gin.Context) {
 	db, err := db.GetDBConnection()
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "unexpected error"},
+		)
 		return
 	}
 
 	repository := repositories.NewAuthorRepository(db)
 
 	if _, err := repository.InsertAuthor(author); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		if errors.Is(err, utils.AuthorAlreadyExistsError) {
+			ctx.JSON(http.StatusConflict, gin.H{"msg": err.Error()})
+			return
+		}
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "unexpected error"},
+		)
 		return
 	}
 	ctx.JSON(http.StatusCreated, gin.H{"id": author.ID})
@@ -42,7 +54,10 @@ func GetAuthors(ctx *gin.Context) {
 	db, err := db.GetDBConnection()
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "unexpected error"},
+		)
 		return
 	}
 
@@ -51,7 +66,10 @@ func GetAuthors(ctx *gin.Context) {
 	authors, err := repository.GetAuthors()
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "unexpected error"},
+		)
 		return
 	}
 
@@ -64,7 +82,10 @@ func SearchAuthorByName(ctx *gin.Context) {
 	db, err := db.GetDBConnection()
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "unexpected error"},
+		)
 		return
 	}
 
@@ -73,7 +94,10 @@ func SearchAuthorByName(ctx *gin.Context) {
 	authors, err := repository.GetAuthorsByName(name)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "error when try search author"})
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "error when try search author"},
+		)
 		return
 	}
 
@@ -90,14 +114,20 @@ func DeleteAuthor(ctx *gin.Context) {
 	db, err := db.GetDBConnection()
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "unexpected error"})
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "unexpected error"},
+		)
 		return
 	}
 
 	repository := repositories.NewAuthorRepository(db)
 
 	if err = repository.DeleteAuthor(id); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "error when try delete author"})
+		ctx.JSON(
+			http.StatusInternalServerError,
+			gin.H{"msg": "error when try delete author"},
+		)
 	}
 	ctx.JSON(http.StatusNoContent, nil)
 }
