@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/joaooliveira247/go-olist-challenge/src/models"
+	"github.com/joaooliveira247/go-olist-challenge/src/utils"
 	"gorm.io/gorm"
 )
 
@@ -18,10 +19,18 @@ func NewAuthorRepository(db *gorm.DB) *Author {
 
 func (repository *Author) InsertAuthor(author models.Authors) (uuid.UUID, error) {
 	tx := repository.db.Begin()
-	if err := tx.Create(&author).Error; err != nil {
+	
+	result := tx.Where("name = ?", author.Name).FirstOrCreate(&author)
+	if err := result.Error; err != nil {
 		tx.Rollback()
 		return uuid.UUID{}, err
 	}
+
+	if result.RowsAffected < 1 {
+		tx.Rollback()
+		return uuid.UUID{}, utils.AuthorAlreadyExistsError
+	}
+
 	tx.Commit()
 	return author.ID, nil
 }
