@@ -1,5 +1,17 @@
 package utils
 
-import "errors"
+import (
+	"fmt"
+)
 
-var AuthorAlreadyExistsError = errors.New("author already exists")
+type AlreadyExistsError struct {
+	Resource string
+}
+
+func (e *AlreadyExistsError) Error() string {
+	return fmt.Sprintf("%s already exists", e.Resource)
+}
+
+var (
+	AuthorAlreadyExistsError = &AlreadyExistsError{"author"}
+)
