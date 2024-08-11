@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,12 @@ func CreateBook(ctx *gin.Context) {
 	repository := repositories.NewBookRepository(db)
 
 	if _, err := repository.InsertBook(book); err != nil {
+		if errors.Is(err, utils.BookAlreadyExistsError) {
+			ctx.JSON(
+				http.StatusConflict, gin.H{"msg": err.Error()},
+			)
+			return
+		}
 		ctx.JSON(
 			http.StatusInternalServerError,
 			gin.H{"msg": "unexpected error"},
