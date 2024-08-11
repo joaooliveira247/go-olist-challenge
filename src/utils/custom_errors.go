@@ -14,4 +14,5 @@ func (e *AlreadyExistsError) Error() string {
 
 var (
 	AuthorAlreadyExistsError = &AlreadyExistsError{"author"}
+	BookAlreadyExistsError   = &AlreadyExistsError{"book"}
 )
