@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/joaooliveira247/go-olist-challenge/src/models"
+	"github.com/joaooliveira247/go-olist-challenge/src/utils"
 	"gorm.io/gorm"
 )
 
@@ -34,10 +35,20 @@ func (repository *Book) verifyAuthors(
 
 func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
 	tx := repository.db.Begin()
-	result := tx.Create(&book)
+	result := tx.Where(
+		&models.Book{
+			Title:           book.Title,
+			Edition:         book.Edition,
+			PublicationYear: book.PublicationYear,
+		},
+	).FirstOrCreate(&book)
 	if err := result.Error; err != nil {
 		tx.Rollback()
 		return uuid.UUID{}, err
+	}
+
+	if result.RowsAffected < 1 {
+		return uuid.UUID{}, utils.BookAlreadyExistsError
 	}
 
 	authors, err := repository.verifyAuthors(book.Authors)
