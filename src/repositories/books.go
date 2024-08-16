@@ -98,3 +98,21 @@ func (repository *Book) GetBooks() ([]models.Book, error) {
 
 	return books, nil
 }
+
+func (repository *Book) GetBooksByQuery(
+	query utils.BookQuery,
+) ([]models.Book, error) {
+	var books []models.Book
+
+	db := repository.db.Table("books b").
+		Select("array_agg(a.id::text) AS authors, b.*").
+		Joins("INNER JOIN book_authors ba ON ba.book_id = b.id_pk").
+		Joins("INNER JOIN authors a ON a.id_pk = ba.author_id").
+		Group("b.id_pk")
+
+	if err := db.Where(query.AsQuery()).Scan(&books).Error; err != nil {
+		return nil, err
+	}
+
+	return books, nil
+}
