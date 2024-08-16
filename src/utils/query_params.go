@@ -42,3 +42,8 @@ func (params *BookQuery) validate() {
 
 	params.validParams = validMap
 }
+
+func (params *BookQuery) IsEmpty() bool {
+	params.validate()
+	return len(params.validParams) < 1
+}
