@@ -69,6 +69,19 @@ func GetBooks(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"msg": "invalid query"})
 		return
 	}
+
+	if !bookQuery.IsEmpty() {
+		books, err := repository.GetBooksByQuery(bookQuery)
+		if err != nil {
+			ctx.JSON(
+				http.StatusInternalServerError,
+				gin.H{"msg": "unexpected error"},
+			)
+			return
+		}
+		ctx.JSON(http.StatusOK, books)
+		return
+	}
 	books, err := repository.GetBooks()
 	if err != nil {
 		ctx.JSON(
