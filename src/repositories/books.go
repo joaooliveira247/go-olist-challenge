@@ -116,3 +116,21 @@ func (repository *Book) GetBooksByQuery(
 
 	return books, nil
 }
+
+func (repository *Book) DeleteBook(id uuid.UUID) error {
+	tx := repository.db.Begin()
+
+	result := tx.Where("id = ?", id).Delete(&models.Book{})
+
+	if err := result.Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if result.RowsAffected < 1 {
+		return utils.BookNotFoundError
+	}
+
+	tx.Commit()
+	return nil
+}
