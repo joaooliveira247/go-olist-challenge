@@ -4,15 +4,29 @@ import (
 	"fmt"
 )
 
-type AlreadyExistsError struct {
+type BaseError struct {
 	Resource string
+	Message  string
 }
 
-func (e *AlreadyExistsError) Error() string {
-	return fmt.Sprintf("%s already exists", e.Resource)
+type AlreadyExistsError struct {
+	BaseError
+}
+
+type NotFoundError struct {
+	BaseError
+}
+
+func (e *BaseError) Error() string {
+	return fmt.Sprintf("%s %s", e.Resource, e.Message)
 }
 
 var (
-	AuthorAlreadyExistsError = &AlreadyExistsError{"author"}
-	BookAlreadyExistsError   = &AlreadyExistsError{"book"}
+	AuthorAlreadyExistsError = &AlreadyExistsError{
+		BaseError{"author", "already exists"},
+	}
+	BookAlreadyExistsError = &AlreadyExistsError{
+		BaseError{"book", "already exists"},
+	}
+	BookNotFoundError = &NotFoundError{BaseError{"book", "not found"}}
 )
