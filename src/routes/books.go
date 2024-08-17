@@ -10,6 +10,6 @@ func BooksRoutes(eng *gin.Engine) {
 	{
 		BooksRouter.POST("/", controllers.CreateBook)
 		BooksRouter.GET("/", controllers.GetBooks)
-		BooksRouter.DELETE("/", controllers.DeleteBook)
+		BooksRouter.DELETE("/:id", controllers.DeleteBook)
 	}
 }
