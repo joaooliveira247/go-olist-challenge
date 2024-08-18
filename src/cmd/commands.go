@@ -21,3 +21,27 @@ func runAPI(ctx *cli.Context) error {
 	}
 	return nil
 }
+
+func Gen() *cli.App {
+	app := cli.NewApp()
+	app.Name = "Book Store API CLI"
+	app.Description = "Book Store CLI"
+	app.Usage = "Manegment of API ecosystem"
+
+	app.Commands = []*cli.Command{
+		{
+			Name:  "run",
+			Usage: "Run API",
+			Flags: []cli.Flag{
+				&cli.Int64Flag{
+					Name:    "port",
+					Aliases: []string{"p"},
+					Usage:   "API port, if not definer, it'll use default port in settings",
+				},
+			},
+			Action: runAPI,
+		},
+	}
+
+	return app
+}
