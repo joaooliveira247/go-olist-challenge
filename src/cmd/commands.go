@@ -30,7 +30,9 @@ func createTables(ctx *cli.Context) error {
 		return err
 	}
 
-	db.Create(dbConnection)
+	if err = db.Create(dbConnection); err != nil {
+		return err
+	}
 	return nil
 }
 
