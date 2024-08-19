@@ -1,16 +1,15 @@
 package db
 
 import (
-	"log"
-
 	"github.com/joaooliveira247/go-olist-challenge/src/models"
 	"gorm.io/gorm"
 )
 
-func Create(db *gorm.DB) {
+func Create(db *gorm.DB) error {
 	if err := db.AutoMigrate(&models.Authors{}, &models.Book{}, &models.BookAuthors{}); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func Delete(db *gorm.DB) {
