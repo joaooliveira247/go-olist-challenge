@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joaooliveira247/go-olist-challenge/src/config"
+	"github.com/joaooliveira247/go-olist-challenge/src/db"
 	"github.com/joaooliveira247/go-olist-challenge/src/routes"
 	"github.com/urfave/cli/v2"
 )
@@ -19,6 +20,17 @@ func runAPI(ctx *cli.Context) error {
 	if err := api.Run(fmt.Sprintf(":%d", port)); err != nil {
 		return err
 	}
+	return nil
+}
+
+func createTables(ctx *cli.Context) error {
+	dbConnection, err := db.GetDBConnection()
+
+	if err != nil {
+		return err
+	}
+
+	db.Create(dbConnection)
 	return nil
 }
 
