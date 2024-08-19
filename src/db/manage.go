@@ -12,9 +12,8 @@ func Create(db *gorm.DB) error {
 	return nil
 }
 
-func Delete(db *gorm.DB) {
-	db.Exec(
-		`
+func Delete(db *gorm.DB) error {
+	rawQuery := `
 do $$ declare
     r record;
 begin
@@ -22,6 +21,9 @@ begin
         execute 'drop table if exists ' || quote_ident(r.tablename) || ' cascade';
     end loop;
 end $$;
-		`,
-	)
+		`
+	if err := db.Exec(rawQuery).Error; err != nil {
+		return err
+	}
+	return nil
 }
