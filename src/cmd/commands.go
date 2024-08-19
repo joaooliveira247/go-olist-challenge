@@ -34,6 +34,19 @@ func createTables(ctx *cli.Context) error {
 	return nil
 }
 
+func deleteTables(ctx *cli.Context) error {
+	dbConnection, err := db.GetDBConnection()
+
+	if err != nil {
+		return err
+	}
+
+	if err = db.Delete(dbConnection); err != nil {
+		return err
+	}
+	return nil
+}
+
 func Gen() *cli.App {
 	app := cli.NewApp()
 	app.Name = "Book Store API CLI"
