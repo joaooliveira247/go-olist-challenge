@@ -68,6 +68,26 @@ func Gen() *cli.App {
 			},
 			Action: runAPI,
 		},
+		{
+			Name:    "database",
+			Aliases: []string{"db"},
+			Usage:   "Interact with database",
+			Flags:   nil,
+			Subcommands: []*cli.Command{
+				{
+					Name:    "create",
+					Usage:   "Create all tables",
+					Aliases: []string{"c"},
+					Action:  createTables,
+				},
+				{
+					Name:    "delete",
+					Usage:   "Delete all tables",
+					Aliases: []string{"d"},
+					Action:  deleteTables,
+				},
+			},
+		},
 	}
 
 	return app
