@@ -14,8 +14,9 @@ var (
 	DBURL = ""
 	// API port, default is 3000
 	APIPort = 0
+	// Project base directory
+	BASE_DIR = ""
 )
-
 
 func LoadEnv() {
 	var err error
@@ -37,5 +38,11 @@ func LoadEnv() {
 
 	if err != nil {
 		log.Fatal("Error loading 'API_PORT' in .env file")
+	}
+
+	BASE_DIR, err = os.Getwd()
+
+	if err != nil {
+		log.Fatal("Error loading os package")
 	}
 }
