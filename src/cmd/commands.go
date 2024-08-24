@@ -12,6 +12,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var composePath string = filepath.Join(config.BASE_DIR, "docker-compose.yaml")
+
 func runAPI(ctx *cli.Context) error {
 	api := gin.Default()
 	routes.RoutesRegistry(api)
@@ -52,7 +54,6 @@ func deleteTables(ctx *cli.Context) error {
 }
 
 func dockerRun(ctx *cli.Context) error {
-	composePath := filepath.Join(config.BASE_DIR, "docker-compose.yaml")
 	cmd := exec.Command("docker", "compose", "-f", composePath, "up", "-d")
 
 	output, err := cmd.Output()
@@ -65,7 +66,6 @@ func dockerRun(ctx *cli.Context) error {
 }
 
 func dockerStop(ctx *cli.Context) error {
-	composePath := filepath.Join(config.BASE_DIR, "docker-compose.yaml")
 
 	cmd := exec.Command("docker", "compose", "-f", composePath, "down")
 
