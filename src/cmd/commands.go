@@ -64,6 +64,19 @@ func dockerRun(ctx *cli.Context) error {
 	return nil
 }
 
+func dockerStop(ctx *cli.Context) error {
+	composePath := filepath.Join(config.BASE_DIR, "docker-compose.yaml")
+
+	cmd := exec.Command("docker", "compose", "-f", composePath, "down")
+
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	fmt.Println("database container down")
+	return nil
+}
+
 func Gen() *cli.App {
 	app := cli.NewApp()
 	app.Name = "Book Store API CLI"
