@@ -56,12 +56,10 @@ func deleteTables(ctx *cli.Context) error {
 func dockerRun(ctx *cli.Context) error {
 	cmd := exec.Command("docker", "compose", "-f", composePath, "up", "-d")
 
-	output, err := cmd.Output()
-
-	if err != nil {
+	if err := cmd.Run(); err != nil {
 		return err
 	}
-	fmt.Println(string(output))
+	fmt.Println("database container up")
 	return nil
 }
 
