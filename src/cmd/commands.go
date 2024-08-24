@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"os/exec"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joaooliveira247/go-olist-challenge/src/config"
@@ -46,6 +48,19 @@ func deleteTables(ctx *cli.Context) error {
 	if err = db.Delete(dbConnection); err != nil {
 		return err
 	}
+	return nil
+}
+
+func dockerRun(ctx *cli.Context) error {
+	composePath := filepath.Join(config.BASE_DIR, "docker-compose.yaml")
+	cmd := exec.Command("docker", "compose", "-f", composePath, "up", "-d")
+
+	output, err := cmd.Output()
+
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(output))
 	return nil
 }
 
