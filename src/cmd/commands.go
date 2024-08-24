@@ -101,6 +101,12 @@ func Gen() *cli.App {
 					Aliases: []string{"d"},
 					Action:  deleteTables,
 				},
+				{
+					Name:    "start",
+					Usage:   "Start container with Postgres image.",
+					Aliases: []string{"up"},
+					Action:  dockerRun,
+				},
 			},
 		},
 	}
