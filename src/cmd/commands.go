@@ -120,6 +120,12 @@ func Gen() *cli.App {
 					Aliases: []string{"up"},
 					Action:  dockerRun,
 				},
+				{
+					Name:    "stop",
+					Usage:   "Stop container with Postgres image",
+					Aliases: []string{"down"},
+					Action:  dockerStop,
+				},
 			},
 		},
 	}
