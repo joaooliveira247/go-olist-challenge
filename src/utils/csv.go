@@ -36,5 +36,4 @@ func CSVToAuthor(path string, header bool) ([]AuthorCSV, error) {
 	}
 
 	return authors, nil
-
 }
