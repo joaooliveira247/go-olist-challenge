@@ -169,6 +169,24 @@ func Gen() *cli.App {
 					Aliases: []string{"down"},
 					Action:  dockerStop,
 				},
+				{
+					Name:    "import",
+					Usage:   "Import authors from CSV",
+					Aliases: []string{"i"},
+					Flags: []cli.Flag{
+						&cli.PathFlag{
+							Name:     "path",
+							Aliases:  []string{"p"},
+							Usage:    "Path to CSV file",
+							Required: true,
+						},
+						&cli.BoolFlag{
+							Name:  "header",
+							Usage: "CSV header true or false",
+						},
+					},
+					Action: importAuthorsFromCSV,
+				},
 			},
 		},
 	}
