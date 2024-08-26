@@ -2,13 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joaooliveira247/go-olist-challenge/src/config"
 	"github.com/joaooliveira247/go-olist-challenge/src/db"
+	"github.com/joaooliveira247/go-olist-challenge/src/models"
+	"github.com/joaooliveira247/go-olist-challenge/src/repositories"
 	"github.com/joaooliveira247/go-olist-challenge/src/routes"
+	"github.com/joaooliveira247/go-olist-challenge/src/utils"
 	"github.com/urfave/cli/v2"
 )
 
@@ -72,6 +76,47 @@ func dockerStop(ctx *cli.Context) error {
 	}
 
 	fmt.Println("database container down")
+	return nil
+}
+
+func importAuthorsFromCSV(ctx *cli.Context) error {
+	header := ctx.Bool("header")
+	path := ctx.Path("path")
+
+	if _, err := os.Stat(path); err != nil {
+		return err
+	}
+
+	authorsCSV, err := utils.CSVToAuthor(path, header)
+
+	if err != nil {
+		return err
+	}
+
+	var authors []models.Authors
+
+	for _, authorCSV := range authorsCSV {
+		var author models.Authors
+		if err := author.ParseValidate(authorCSV); err != nil {
+			return err
+		}
+		authors = append(authors, author)
+	}
+
+	db, err := db.GetDBConnection()
+	if err != nil {
+		return err
+	}
+
+	repository := repositories.NewAuthorRepository(db)
+
+	IDs, err := repository.InsertAuthors(authors)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(IDs)
 	return nil
 }
 
