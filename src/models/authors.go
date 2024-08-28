@@ -7,7 +7,7 @@ import (
 )
 
 type Authors struct {
-	Name string `json:"name,omitempty" gorm:"type:varchar(255);column:name"`
+	Name string `json:"name,omitempty" gorm:"type:varchar(255);column:name;unique;not null"`
 	UUIDHolder
 	IDPK uint `json:"-"              gorm:"primaryKey;column:id_pk"`
 }
