@@ -5,7 +5,12 @@ import (
 	"os"
 
 	"github.com/joaooliveira247/go-olist-challenge/src/cmd"
+	"github.com/joaooliveira247/go-olist-challenge/src/config"
 )
+
+func init() {
+	config.LoadEnv()
+}
 
 func main() {
 	cli := cmd.Gen()
