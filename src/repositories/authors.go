@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -17,9 +18,11 @@ func NewAuthorRepository(db *gorm.DB) *Author {
 	return &Author{db}
 }
 
-func (repository *Author) InsertAuthor(author models.Authors) (uuid.UUID, error) {
+func (repository *Author) InsertAuthor(
+	author models.Authors,
+) (uuid.UUID, error) {
 	tx := repository.db.Begin()
-	
+
 	result := tx.Where("name = ?", author.Name).FirstOrCreate(&author)
 	if err := result.Error; err != nil {
 		tx.Rollback()
@@ -35,6 +38,23 @@ func (repository *Author) InsertAuthor(author models.Authors) (uuid.UUID, error)
 	return author.ID, nil
 }
 
+func (repository *Author) InsertAuthors(
+	authors []models.Authors,
+) ([]uuid.UUID, error) {
+	var uuids []uuid.UUID
+	for _, author := range authors {
+		uuid, err := repository.InsertAuthor(author)
+		if err != nil {
+			if errors.Is(err, utils.AuthorAlreadyExistsError) {
+				continue
+			}
+			return nil, err
+		}
+		uuids = append(uuids, uuid)
+	}
+	return uuids, nil
+}
+
 func (repository *Author) GetAuthors() ([]models.Authors, error) {
 	var authors []models.Authors
 
@@ -45,7 +65,9 @@ func (repository *Author) GetAuthors() ([]models.Authors, error) {
 	return authors, nil
 }
 
-func (repository *Author) GetAuthorsByName(name string) ([]models.Authors, error) {
+func (repository *Author) GetAuthorsByName(
+	name string,
+) ([]models.Authors, error) {
 	var authors []models.Authors
 
 	if err := repository.db.Find(&authors, "name LIKE ?", fmt.Sprintf("%%%s%%", name)).Error; err != nil {
