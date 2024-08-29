@@ -126,14 +126,18 @@ func (repository *Book) getBookByID(id uuid.UUID) (models.Book, error) {
 		Joins("INNER JOIN authors a ON a.id_pk = ba.author_id").
 		Group("b.id_pk")
 
-	if err := db.Where("id = ?", id).Scan(&book).Error; err != nil {
+	result := db.Where("id = ?", id).Scan(&book)
+
+	if err := result.Error; err != nil {
 		return models.Book{}, err
+	}
+
+	if result.RowsAffected < 1 {
+		return models.Book{}, utils.BookNotFoundError
 	}
 
 	return book, nil
 }
-
-
 
 func (repository *Book) DeleteBook(id uuid.UUID) error {
 	tx := repository.db.Begin()
