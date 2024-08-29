@@ -28,5 +28,6 @@ var (
 	BookAlreadyExistsError = &AlreadyExistsError{
 		BaseError{"book", "already exists"},
 	}
-	BookNotFoundError = &NotFoundError{BaseError{"book", "not found"}}
+	BookNotFoundError   = &NotFoundError{BaseError{"book", "not found"}}
+	AuthorNotFoundError = &NotFoundError{BaseError{"author", "not found"}}
 )
