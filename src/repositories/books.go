@@ -117,6 +117,22 @@ func (repository *Book) GetBooksByQuery(
 	return books, nil
 }
 
+func (repository *Book) GetBookByID(id uuid.UUID) (models.Book, error) {
+	var book models.Book
+
+	db := repository.db.Table("books b").
+		Select("array_agg(a.id::text) AS authors, b.*").
+		Joins("INNER JOIN book_authors ba ON ba.book_id = b.id_pk").
+		Joins("INNER JOIN authors a ON a.id_pk = ba.author_id").
+		Group("b.id_pk")
+
+	if err := db.Where("id = ?", id).Scan(&book).Error; err != nil {
+		return models.Book{}, err
+	}
+
+	return book, nil
+}
+
 func (repository *Book) DeleteBook(id uuid.UUID) error {
 	tx := repository.db.Begin()
 
