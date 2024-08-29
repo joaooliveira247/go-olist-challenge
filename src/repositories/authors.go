@@ -70,8 +70,15 @@ func (repository *Author) GetAuthorsByName(
 ) ([]models.Authors, error) {
 	var authors []models.Authors
 
-	if err := repository.db.Find(&authors, "name LIKE ?", fmt.Sprintf("%%%s%%", name)).Error; err != nil {
+	result := repository.db.
+		Find(&authors, "name LIKE ?", fmt.Sprintf("%%%s%%", name))
+
+	if err := result.Error; err != nil {
 		return nil, err
+	}
+
+	if result.RowsAffected < 1 {
+		return nil, utils.AuthorNotFoundError
 	}
 	return authors, nil
 }
