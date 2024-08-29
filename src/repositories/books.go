@@ -117,7 +117,7 @@ func (repository *Book) GetBooksByQuery(
 	return books, nil
 }
 
-func (repository *Book) GetBookByID(id uuid.UUID) (models.Book, error) {
+func (repository *Book) getBookByID(id uuid.UUID) (models.Book, error) {
 	var book models.Book
 
 	db := repository.db.Table("books b").
@@ -132,6 +132,8 @@ func (repository *Book) GetBookByID(id uuid.UUID) (models.Book, error) {
 
 	return book, nil
 }
+
+
 
 func (repository *Book) DeleteBook(id uuid.UUID) error {
 	tx := repository.db.Begin()
