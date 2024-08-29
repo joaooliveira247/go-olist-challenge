@@ -94,6 +94,10 @@ func SearchAuthorByName(ctx *gin.Context) {
 	authors, err := repository.GetAuthorsByName(name)
 
 	if err != nil {
+		if errors.Is(err, utils.AuthorNotFoundError) {
+			ctx.JSON(http.StatusNotFound, gin.H{"msg": err.Error()})
+			return
+		}
 		ctx.JSON(
 			http.StatusInternalServerError,
 			gin.H{"msg": "error when try search author"},
