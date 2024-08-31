@@ -34,4 +34,5 @@ var (
 	}
 	BookNotFoundError   = &NotFoundError{BaseError{"book", "not found"}}
 	AuthorNotFoundError = &NotFoundError{BaseError{"author", "not found"}}
+	BookNothingToUpdateError = &NothingToUpdateError{BaseError{"book", "any field has the same value registred"}}
 )
