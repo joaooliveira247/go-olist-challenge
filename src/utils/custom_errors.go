@@ -17,6 +17,10 @@ type NotFoundError struct {
 	BaseError
 }
 
+type NothingToUpdateError struct {
+	BaseError
+}
+
 func (e *BaseError) Error() string {
 	return fmt.Sprintf("%s %s", e.Resource, e.Message)
 }
