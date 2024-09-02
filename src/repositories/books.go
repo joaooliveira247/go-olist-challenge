@@ -33,6 +33,20 @@ func (repository *Book) verifyAuthors(
 	return validAuthors, nil
 }
 
+func (repository *Book) createBookAuthorsRef(
+	bookauthors models.BookAuthors,
+) error {
+	tx := repository.db.Begin()
+
+	if err := tx.Create(&bookauthors).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
+
+	return nil
+}
+
 func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
 	tx := repository.db.Begin()
 	result := tx.Where(
