@@ -47,6 +47,18 @@ func (repository *Book) createBookAuthorsRef(
 	return nil
 }
 
+func (repository *Book) deleteBookAuthorsRef(bookID uint) error {
+	tx := repository.db.Begin()
+
+	if err := tx.Where("book_id = ?", bookID).Delete(models.BookAuthors{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+	return nil
+}
+
 func (repository *Book) InsertBook(book models.Book) (uuid.UUID, error) {
 	tx := repository.db.Begin()
 	result := tx.Where(
