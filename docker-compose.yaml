@@ -1,7 +1,6 @@
 version: '3.1'
 
 services:
-
   book_store:
     image: postgres:11-alpine
     restart: "no"
@@ -11,3 +10,11 @@ services:
       POSTGRES_DB: book_store
     ports:
       - 5432:5432
+  book_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/app
